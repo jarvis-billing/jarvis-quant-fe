@@ -1,0 +1,135 @@
+<div class="page-container">
+  <h1 class="page-title">Dashboard</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <!-- Insumos Card -->
+    <mat-card class="stat-card" [routerLink]="'/insumos'">
+      <mat-card-content>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-1">Insumos</p>
+            <p class="text-3xl font-bold text-primary-700">{{ supplies.length }}</p>
+            <p class="text-xs text-gray-400 mt-1">Registrados</p>
+          </div>
+          <div class="stat-icon bg-blue-100">
+            <mat-icon class="text-blue-600">inventory_2</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Productos Card -->
+    <mat-card class="stat-card" [routerLink]="'/productos'">
+      <mat-card-content>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-1">Productos</p>
+            <p class="text-3xl font-bold text-primary-700">{{ products.length }}</p>
+            <p class="text-xs text-gray-400 mt-1">Configurados</p>
+          </div>
+          <div class="stat-icon bg-indigo-100">
+            <mat-icon class="text-indigo-600">view_in_ar</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recetas Card -->
+    <mat-card class="stat-card" [routerLink]="'/costos'">
+      <mat-card-content>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-1">Con Receta</p>
+            <p class="text-3xl font-bold text-primary-700">{{ productsWithRecipe.length }}</p>
+            <p class="text-xs text-gray-400 mt-1">Recetas configuradas</p>
+          </div>
+          <div class="stat-icon bg-green-100">
+            <mat-icon class="text-green-600">menu_book</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Ventas Card -->
+    <mat-card class="stat-card" [routerLink]="'/ventas'">
+      <mat-card-content>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 mb-1">Ventas</p>
+            <p class="text-3xl font-bold text-primary-700">{{ sales.length }}</p>
+            <p class="text-xs text-gray-400 mt-1">Total: {{ totalSales | copCurrency }}</p>
+          </div>
+          <div class="stat-icon bg-orange-100">
+            <mat-icon class="text-orange-600">point_of_sale</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <h2 class="text-xl font-medium text-gray-700 mb-4">Acciones Rápidas</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+    <mat-card class="quick-action-card" [routerLink]="'/insumos'" [queryParams]="{action: 'new'}">
+      <mat-card-content>
+        <div class="flex items-center gap-4">
+          <mat-icon class="text-blue-500 text-3xl">add_circle</mat-icon>
+          <div>
+            <p class="font-medium text-gray-800">Nuevo Insumo</p>
+            <p class="text-sm text-gray-500">Registrar un nuevo insumo</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="quick-action-card" [routerLink]="'/productos'" [queryParams]="{action: 'new'}">
+      <mat-card-content>
+        <div class="flex items-center gap-4">
+          <mat-icon class="text-indigo-500 text-3xl">add_box</mat-icon>
+          <div>
+            <p class="font-medium text-gray-800">Nuevo Producto</p>
+            <p class="text-sm text-gray-500">Configurar un nuevo producto</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="quick-action-card" [routerLink]="'/ventas'" [queryParams]="{action: 'new'}">
+      <mat-card-content>
+        <div class="flex items-center gap-4">
+          <mat-icon class="text-orange-500 text-3xl">receipt_long</mat-icon>
+          <div>
+            <p class="font-medium text-gray-800">Nueva Venta</p>
+            <p class="text-sm text-gray-500">Registrar una venta</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Recent Products with Cost -->
+  @if (productsWithRecipe.length > 0) {
+    <h2 class="text-xl font-medium text-gray-700 mb-4">Productos con Costo Calculado</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (product of productsWithRecipe; track product.id) {
+        <mat-card>
+          <mat-card-header>
+            <mat-icon mat-card-avatar class="text-primary-500">view_in_ar</mat-icon>
+            <mat-card-title>{{ product.name }}</mat-card-title>
+            <mat-card-subtitle>{{ product.type }} - {{ product.widthCm }}x{{ product.heightCm }}x{{ product.lengthCm }} cm</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content class="mt-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Costo producción ({{ product.unitsPerBatch }} uds):</span>
+              <span class="font-bold">{{ product.productionCost | copCurrency }}</span>
+            </div>
+            <div class="flex justify-between text-sm mt-1">
+              <span class="text-gray-500">Costo unitario:</span>
+              <span class="font-bold text-primary-700">{{ product.unitCost | copCurrency }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

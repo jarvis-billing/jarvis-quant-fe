@@ -1,0 +1,70 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+  <mat-icon class="text-primary-500">{{ isEdit ? 'edit' : 'add_box' }}</mat-icon>
+  {{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-3 pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: Bloque Hueco 10">
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>El nombre es requerido</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripcion</mat-label>
+      <textarea matInput formControlName="description" rows="2" placeholder="Descripcion del producto"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo de Producto</mat-label>
+      <mat-select formControlName="type">
+        @for (t of productTypes; track t) {
+          <mat-option [value]="t">{{ t }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
+        <mat-error>El tipo es requerido</mat-error>
+      }
+    </mat-form-field>
+
+    <p class="text-sm font-medium text-gray-600 mb-0">Dimensiones (cm)</p>
+    <div class="grid grid-cols-3 gap-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Ancho</mat-label>
+        <input matInput type="number" formControlName="widthCm">
+        <span matTextSuffix>cm</span>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Alto</mat-label>
+        <input matInput type="number" formControlName="heightCm">
+        <span matTextSuffix>cm</span>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Largo</mat-label>
+        <input matInput type="number" formControlName="lengthCm">
+        <span matTextSuffix>cm</span>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Unidades por Produccion</mat-label>
+      <input matInput type="number" formControlName="unitsPerBatch" placeholder="Ej: 60">
+      <mat-hint>Cantidad de unidades que se producen por tanda</mat-hint>
+      @if (form.get('unitsPerBatch')?.hasError('min')) {
+        <mat-error>Debe ser al menos 1</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="gap-2">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    {{ isEdit ? 'Actualizar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>

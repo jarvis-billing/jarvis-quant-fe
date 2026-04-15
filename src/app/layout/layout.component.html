@@ -1,0 +1,54 @@
+<div class="layout-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <button mat-icon-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-2xl">domain</mat-icon>
+      <span class="text-lg font-medium hidden sm:inline">Megabloques</span>
+      <span class="text-lg font-medium sm:hidden">MB</span>
+    </div>
+    <span class="flex-1"></span>
+    <span class="text-sm opacity-80 hidden md:inline">Sistema de Costos de Producción</span>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #sidenav
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="sidenavOpened"
+      class="sidenav"
+      [fixedInViewport]="isMobile"
+      fixedTopGap="64">
+
+      <div class="sidenav-header">
+        <div class="flex items-center gap-3 p-4 border-b border-gray-200">
+          <div class="w-10 h-10 rounded-full bg-primary-700 flex items-center justify-center">
+            <mat-icon class="text-white text-xl">factory</mat-icon>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800 m-0">Megabloques</p>
+            <p class="text-xs text-gray-500 m-0">Panel de Control</p>
+          </div>
+        </div>
+      </div>
+
+      <mat-nav-list>
+        @for (item of menuItems; track item.route) {
+          <a mat-list-item
+             [routerLink]="item.route"
+             routerLinkActive="active-link"
+             (click)="closeSidenavIfMobile()"
+             class="nav-item">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

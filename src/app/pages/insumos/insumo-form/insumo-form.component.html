@@ -1,0 +1,88 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+  <mat-icon class="text-primary-500">{{ isEdit ? 'edit' : 'add_circle' }}</mat-icon>
+  {{ isEdit ? 'Editar Insumo' : 'Nuevo Insumo' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-3 pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: Arena Amarilla">
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>El nombre es requerido</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripcion</mat-label>
+      <textarea matInput formControlName="description" rows="2" placeholder="Descripcion del insumo"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categories; track cat) {
+          <mat-option [value]="cat">{{ cat }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <p class="text-sm font-medium text-gray-600 m-0">Unidades y Conversión</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Unidad de Compra/Venta</mat-label>
+        <mat-select formControlName="purchaseUnit">
+          @for (u of measurementUnits; track u) {
+            <mat-option [value]="u">{{ u }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Unidad en Receta</mat-label>
+        <mat-select formControlName="recipeUnit">
+          @for (u of measurementUnits; track u) {
+            <mat-option [value]="u">{{ u }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (!sameUnit) {
+      <mat-form-field appearance="outline">
+        <mat-label>Presentación (cuántas {{ form.get('recipeUnit')?.value || 'uds receta' }} por {{ form.get('purchaseUnit')?.value || 'ud compra' }})</mat-label>
+        <input matInput type="number" formControlName="conversionFactor" min="0.01" step="0.5">
+      </mat-form-field>
+    }
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Costo por {{ form.get('purchaseUnit')?.value || 'unidad' }}</mat-label>
+        <input matInput appCopCurrency formControlName="unitCost" placeholder="0">
+        <span matTextPrefix>$&nbsp;</span>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Costo por {{ form.get('recipeUnit')?.value || 'ud receta' }} (auto)</mat-label>
+        <input matInput formControlName="recipeCost" placeholder="0">
+        <span matTextPrefix>$&nbsp;</span>
+      </mat-form-field>
+    </div>
+
+    @if (!sameUnit) {
+      <div class="bg-blue-50 rounded-lg p-3 text-sm text-blue-700">
+        <mat-icon class="text-sm align-middle mr-1">info</mat-icon>
+        1 {{ form.get('purchaseUnit')?.value }} = {{ form.get('conversionFactor')?.value }} {{ form.get('recipeUnit')?.value }}.
+        Costo por {{ form.get('recipeUnit')?.value }}: <strong>{{ form.get('recipeCost')?.value | number:'1.2-2' }} COP</strong>
+      </div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="gap-2">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    {{ isEdit ? 'Actualizar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>
