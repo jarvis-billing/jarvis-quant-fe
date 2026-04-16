@@ -1,1 +1,1 @@
-web: npm start
+web: node dist/megabloques/server/server.mjs
