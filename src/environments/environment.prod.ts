@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api'
+  apiUrl: 'https://megabloques-be-f14b8673f208.herokuapp.com/api'
 };
